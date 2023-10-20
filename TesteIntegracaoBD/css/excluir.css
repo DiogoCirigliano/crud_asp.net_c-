@@ -1,0 +1,97 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-image: linear-gradient(280deg, #474747, black);
+    height: 100vh;
+    color: white;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    width: 100vw;
+    height: 80px;
+    background-color: #474747;
+    border-bottom: 1px solid #1af502;
+}
+
+    .menu a {
+        align-items: center;
+        font-size: 22px;
+        color: #1af502;
+        font-weight: bold;
+    }
+
+.l2 {
+    text-decoration: overline;
+}
+
+a {
+    text-decoration: none;
+    color: #1af502;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+    gap: 40px;
+    border: 1px solid #1af502;
+    border-radius: 20px;
+    padding: 30px;
+}
+
+.Numericos {
+    display: flex;
+    justify-content: space-between;
+}
+
+.lbltxtCodigo {
+    display: flex;
+    flex-direction: column;
+}
+
+.lbltxtValor {
+    display: flex;
+    flex-direction: column;
+}
+
+.lbltxtNome {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #1af502;
+    color: white;
+}
+
+#btnExcluir {
+
+    border: 1px solid #f50202;
+    border-radius: 20px;
+    width:150px;    
+}
+#btncancelar {
+    border: 1px solid #1af502;
+    border-radius: 20px;
+    width: 150px;
+}
+
+
+.buttons
+{
+    display:flex;
+    justify-content:space-between;
+}
