@@ -129,6 +129,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Banco_dados.cs" />
     <Compile Include="editar.aspx.cs">
       <DependentUpon>editar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

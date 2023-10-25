@@ -12,48 +12,43 @@ namespace TesteIntegracaoBD
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            string linhaConexao = "SERVER=localhost;UID=root;PASSWORD=root;DATABASE=integracaoBD";
-            MySqlConnection conexao = new MySqlConnection(linhaConexao); //Intanciamento
+            Banco_dados conexao = new Banco_dados();
+            string select = "SELECT * FROM produto;";
+            conexao.conectar("localhost", "root", "root", "integracaoBD");
             MySqlDataReader dados = null;
+
             try
             {
-                conexao.Open();
-                string comando = "Select * from produto";
-                MySqlCommand cSQL = new MySqlCommand(comando, conexao);
-                dados = cSQL.ExecuteReader();
+                dados = conexao.consultar(select);
+
                 while (dados.Read())
                 {
                     litTabela.Text += $@"<tr>
-                                            <td>{dados.GetString(0)}</td>
-                                            <td>{dados.GetString(1)}</td>
-                                            <td>{dados.GetString(2)}</td>
-                                            <td>    
-                                                <a href='editar.aspx?c={dados.GetString(0)}'>Editar</a>
-                                                <br/>
-                                                <a style='color:red;' href='excluir.aspx?c={dados.GetString(0)}'>Excluir</a>
-                                            </td>
-                                        </tr>";
+                                    <td>{dados.GetString(0)}</td>
+                                    <td>{dados.GetString(1)}</td>
+                                    <td>{dados.GetString(2)}</td>
+                                    <td>    
+                                        <a href='editar.aspx?c={dados.GetString(0)}'>Editar</a>
+                                        <br/>
+                                        <a style='color:red;' href='excluir.aspx?c={dados.GetString(0)}'>Excluir</a>
+                                    </td>
+                                </tr>";
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                litTabela.Text = "Ocorreu um erro inesperado! Por favor novamente.";
+                litTabela.Text = $"Ocorreu um erro inesperado! Erro: {ex.Message}";
             }
             finally
-            { 
-                if (dados !=null)
+            {
+                if (dados != null && !dados.IsClosed)
                 {
-                    if (!dados.IsClosed)
-                    { 
-                        dados.Close();
-                    }
+                    dados.Close();
                 }
-                
-                if (conexao !=null)
-                    if (conexao.State == System.Data.ConnectionState.Open)
-                        conexao.Close();
+                conexao.desconectar();
             }
-            
+
         }
+
     }
 }

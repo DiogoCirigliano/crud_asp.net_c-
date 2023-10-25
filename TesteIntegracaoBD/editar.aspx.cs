@@ -14,30 +14,28 @@ namespace TesteIntegracaoBD
         protected void Page_Load(object sender, EventArgs e)
         {
             txtcodiogo.Enabled= false;
-
-            if (!IsPostBack && Request.QueryString["c"] != null)
+            if (Request.QueryString["c"] != null)
             {
-                string linhaConexao = "SERVER=localhost;UID=root;PASSWORD=root;DATABASE=integracaoBD";
-                MySqlConnection conexao = new MySqlConnection(linhaConexao);
+                string codigoProduto = Request.QueryString["c"];
+                Banco_dados conexao = new Banco_dados();
+                conexao.conectar("localhost", "root", "root", "integracaoBD");
                 MySqlDataReader dados = null;
 
                 try
                 {
-                    conexao.Open();
-                    string comando = $"SELECT * FROM produto WHERE cd_produto = {Request.QueryString["c"]}";
-                    MySqlCommand cSQL = new MySqlCommand(comando, conexao);
-                    dados = cSQL.ExecuteReader();
+                    string comando = $"SELECT * FROM produto WHERE cd_produto = {codigoProduto}";
+                    dados = conexao.consultar(comando);
 
                     if (dados.Read())
                     {
-                        txtcodiogo.Text = dados.GetString(0);
-                        txtNome.Text = dados.GetString(1);
-                        txtValor.Text = dados.GetDecimal(2).ToString();
+                        txtcodiogo.Text = dados[0].ToString();
+                        txtNome.Text = dados[1].ToString();
+                        txtValor.Text = dados[2].ToString();
                     }
                 }
-                catch 
+                catch
                 {
-                    txtcodiogo.Text = "Ocorreu um erro inesperado! Por favor tente novamente.";
+                    lblSpam.Text = "Ocorreu um erro inesperado!";
                 }
                 finally
                 {
@@ -48,14 +46,6 @@ namespace TesteIntegracaoBD
                             dados.Close();
                         }
                     }
-
-                    if (conexao != null)
-                    {
-                        if (conexao.State == System.Data.ConnectionState.Open)
-                        {
-                            conexao.Close();
-                        }
-                    }
                 }
             }
         }
@@ -64,6 +54,7 @@ namespace TesteIntegracaoBD
             string novoNome = txtNome.Text;
             string novoPreco = txtValor.Text.Replace(",", ".");
 
+            #region tratamento de erro
             if (string.IsNullOrEmpty(txtNome.Text))
             {
                 lblSpam.Text = "Erro: Digite o nome do produto!!";
@@ -87,16 +78,16 @@ namespace TesteIntegracaoBD
                 txtValor.Text = "";
                 return;
             }
+            #endregion
 
-            string linhaConexao = "SERVER=localhost;UID=root;PASSWORD=root;DATABASE=integracaoBD";
-            MySqlConnection conexao = new MySqlConnection(linhaConexao);
+
+            Banco_dados conexao = new Banco_dados();
+            conexao.conectar("localhost", "root", "root", "integracaoBD");
 
             try
             {
-                conexao.Open();
                 string comando = $"UPDATE produto SET nm_produto = '{novoNome}', vl_produto = {novoPreco} WHERE cd_produto = {Request.QueryString["c"]}";
-                MySqlCommand cSQL = new MySqlCommand(comando, conexao);
-                cSQL.ExecuteNonQuery();
+                conexao.Executar(comando);
             }
             catch 
             {
@@ -104,16 +95,9 @@ namespace TesteIntegracaoBD
             }
             finally
             {
-                if (conexao != null)
-                {
-                    if (conexao.State == System.Data.ConnectionState.Open)
-                    {
-                        conexao.Close();
-                    }
-                }
+                Response.Redirect("index.aspx");
+                conexao.desconectar();
             }
-
-            Response.Redirect("index.aspx");
         }
     }
 }

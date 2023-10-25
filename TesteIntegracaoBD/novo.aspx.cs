@@ -67,17 +67,14 @@ namespace TesteIntegracaoBD
 
             #endregion
 
-            string linhaConexao = "SERVER=localhost;UID=root;PASSWORD=root;DATABASE=integracaoBD";
-
-            MySqlConnection conexao = new MySqlConnection(linhaConexao); 
+            Banco_dados conexao = new Banco_dados();
+            conexao.conectar("localhost", "root", "root", "integracaoBD");
 
 
             try
             {   
-                    conexao.Open();
                     string inserirComando = $"INSERT INTO produto (cd_produto, nm_produto, vl_produto) VALUES ({novoCodigo}, '{novoNome}', {novoPreco})";
-                    MySqlCommand cSQLInserir = new MySqlCommand(inserirComando, conexao);
-                    cSQLInserir.ExecuteNonQuery();
+                    conexao.Executar(inserirComando);
                     lblSpam.Text = "";
                 
             }
@@ -86,7 +83,12 @@ namespace TesteIntegracaoBD
                 lblSpam.Text = "O código já existe";
                 return;
             }
-            Response.Redirect("index.aspx");
+            finally
+            {
+                conexao.desconectar();
+                Response.Redirect("index.aspx");
+
+            }
 
         }
     }

@@ -19,16 +19,14 @@ namespace TesteIntegracaoBD
             if (Request.QueryString["c"] != null)
             {
                 string codigoProduto = Request.QueryString["c"];
-                string linhaConexao = "SERVER=localhost;UID=root;PASSWORD=root;DATABASE=integracaoBD";
-                MySqlConnection conexao = new MySqlConnection(linhaConexao);
+                Banco_dados conexao = new Banco_dados();
+                conexao.conectar("localhost", "root", "root", "integracaoBD");
                 MySqlDataReader dados = null;
 
                 try
                 {
-                    conexao.Open();
                     string comando = $"SELECT * FROM produto WHERE cd_produto = {codigoProduto}";
-                    MySqlCommand cSQL = new MySqlCommand(comando, conexao);
-                    dados = cSQL.ExecuteReader();
+                    dados = conexao.consultar(comando);
 
                     if (dados.Read())
                     {
@@ -50,14 +48,6 @@ namespace TesteIntegracaoBD
                             dados.Close();
                         }
                     }
-
-                    if (conexao != null)
-                    {
-                        if (conexao.State == System.Data.ConnectionState.Open)
-                        {
-                            conexao.Close();
-                        }
-                    }
                 }
             }
         }
@@ -67,16 +57,13 @@ namespace TesteIntegracaoBD
             if (Request.QueryString["c"] != null)
             {
                 string codigoProduto = Request.QueryString["c"];
-                string linhaConexao = "SERVER=localhost;UID=root;PASSWORD=root;DATABASE=integracaoBD";
-                MySqlConnection conexao = new MySqlConnection(linhaConexao);
+                Banco_dados conexao = new Banco_dados();
+                conexao.conectar("localhost", "root", "root", "integracaoBD");
 
                 try
                 {
-                    conexao.Open();
                     string comando = $"DELETE FROM produto WHERE cd_produto = {codigoProduto}";
-                    MySqlCommand cSQL = new MySqlCommand(comando, conexao);
-                    cSQL.ExecuteNonQuery();
-
+                    conexao.Executar(comando);
                     Response.Redirect("index.aspx");
                 }
                 catch
@@ -85,13 +72,7 @@ namespace TesteIntegracaoBD
                 }
                 finally
                 {
-                    if (conexao != null)
-                    {
-                        if (conexao.State == System.Data.ConnectionState.Open)
-                        {
-                            conexao.Close();
-                        }
-                    }
+                conexao.desconectar();
                 }
             }
         }
