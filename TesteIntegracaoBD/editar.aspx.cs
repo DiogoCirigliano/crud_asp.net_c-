@@ -13,41 +13,45 @@ namespace TesteIntegracaoBD
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            txtcodiogo.Enabled= false;
-            if (Request.QueryString["c"] != null)
+            if(!IsPostBack)
             {
-                string codigoProduto = Request.QueryString["c"];
-                Banco_dados conexao = new Banco_dados();
-                conexao.conectar("localhost", "root", "root", "integracaoBD");
-                MySqlDataReader dados = null;
+                txtcodiogo.Enabled = false;
+                if (Request.QueryString["c"] != null)
+                {
+                    string codigoProduto = Request.QueryString["c"];
+                    Banco_dados conexao = new Banco_dados();
+                    conexao.conectar("localhost", "root", "root", "integracaoBD");
+                    MySqlDataReader dados = null;
 
-                try
-                {
-                    string comando = $"SELECT * FROM produto WHERE cd_produto = {codigoProduto}";
-                    dados = conexao.consultar(comando);
+                    try
+                    {
+                        string comando = $"SELECT * FROM produto WHERE cd_produto = {codigoProduto}";
+                        dados = conexao.consultar(comando);
 
-                    if (dados.Read())
-                    {
-                        txtcodiogo.Text = dados[0].ToString();
-                        txtNome.Text = dados[1].ToString();
-                        txtValor.Text = dados[2].ToString();
-                    }
-                }
-                catch
-                {
-                    lblSpam.Text = "Ocorreu um erro inesperado!";
-                }
-                finally
-                {
-                    if (dados != null)
-                    {
-                        if (!dados.IsClosed)
+                        if (dados.Read())
                         {
-                            dados.Close();
+                            txtcodiogo.Text = dados[0].ToString();
+                            txtNome.Text = dados[1].ToString();
+                            txtValor.Text = dados[2].ToString();
+                        }
+                    }
+                    catch
+                    {
+                        lblSpam.Text = "Ocorreu um erro inesperado!";
+                    }
+                    finally
+                    {
+                        if (dados != null)
+                        {
+                            if (!dados.IsClosed)
+                            {
+                                dados.Close();
+                            }
                         }
                     }
                 }
             }
+
         }
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
@@ -95,8 +99,8 @@ namespace TesteIntegracaoBD
             }
             finally
             {
-                Response.Redirect("index.aspx");
                 conexao.desconectar();
+                Response.Redirect("index.aspx");
             }
         }
     }

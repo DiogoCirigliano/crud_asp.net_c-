@@ -59,7 +59,10 @@ namespace TesteIntegracaoBD
             {
                 throw new Exception("Erro inesperado: " + ex.Message);
             }
-
+            finally
+            {
+                conexao.Close();
+            }
         }
         #endregion
 
